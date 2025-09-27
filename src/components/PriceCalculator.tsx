@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import InputField from './InputField';
 import OptionSelector from './OptionSelector';
 import PriceSummary from './PriceSummary';
@@ -6,27 +6,22 @@ import ContactButton from './ContactButton';
 import {
   calculatePrice,
   FINISH_LABEL,
-  FONT_LABEL,
   WOOD_LABEL,
   MIN_WIDTH_CM,
   MAX_WIDTH_CM,
   MIN_HEIGHT_CM,
   MAX_HEIGHT_CM,
+  DEFAULT_FONT_PRICING,
+  type FontDefinition,
+  type FontId,
+  type FontPricingMap,
   type FinishType,
-  type FontStyle,
   type WoodType,
 } from '../utils/pricing';
 
 const woodOptions = [
-  { value: 'pino' satisfies WoodType, label: WOOD_LABEL.pino, helper: 'Ligero y económico', icon: '🌲' },
-  { value: 'cedro' satisfies WoodType, label: WOOD_LABEL.cedro, helper: 'Tono rojizo, resistente', icon: '🌳' },
-  { value: 'roble' satisfies WoodType, label: WOOD_LABEL.roble, helper: 'Premium y duradero', icon: '🪵' },
-];
-
-const fontOptions = [
-  { value: 'block' satisfies FontStyle, label: FONT_LABEL.block, helper: 'Legible y recto', icon: '🔠' },
-  { value: 'serif' satisfies FontStyle, label: FONT_LABEL.serif, helper: 'Clásica y elegante', icon: '✒️' },
-  { value: 'script' satisfies FontStyle, label: FONT_LABEL.script, helper: 'Caligrafía artística', icon: '🖋️' },
+  { value: 'angelin' satisfies WoodType, label: WOOD_LABEL.angelin, helper: 'Marrón rojizo, resistente', icon: '🌲' },
+  { value: 'cedro_mara' satisfies WoodType, label: WOOD_LABEL.cedro_mara, helper: 'Vetado, calidad premium', icon: '🌳' },
 ];
 
 const finishOptions = [
@@ -44,11 +39,74 @@ const currencyFormatter = new Intl.NumberFormat('es-AR', {
 const PriceCalculator = () => {
   const [width, setWidth] = useState(60);
   const [height, setHeight] = useState(25);
-  const [wood, setWood] = useState<WoodType>('pino');
-  const [font, setFont] = useState<FontStyle>('block');
+  const [wood, setWood] = useState<WoodType>('angelin');
+  const [fontsMap, setFontsMap] = useState<FontPricingMap>(DEFAULT_FONT_PRICING);
+  const [font, setFont] = useState<FontId>('block');
   const [finish, setFinish] = useState<FinishType>('natural');
   const [iron, setIron] = useState(false);
   const [text, setText] = useState('El Ejemplo');
+  const [isLoadingFonts, setIsLoadingFonts] = useState(false);
+  const [fontsError, setFontsError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isActive = true;
+    const fetchFonts = async () => {
+      try {
+        setIsLoadingFonts(true);
+        const response = await fetch('/api/fonts');
+        if (!response.ok) {
+          throw new Error(`Estado ${response.status}`);
+        }
+        const payload = (await response.json()) as FontPricingMap | FontDefinition[];
+        const parsed: FontPricingMap = Array.isArray(payload)
+          ? payload.reduce<FontPricingMap>((acc, item) => {
+              if (item && typeof (item as FontDefinition).label === 'string') {
+                const id = (item as FontDefinition & { id?: string }).id ?? item.label.toLowerCase();
+                acc[id] = {
+                  label: item.label,
+                  multiplier: item.multiplier ?? 1,
+                  helper: item.helper,
+                  icon: item.icon,
+                } satisfies FontDefinition;
+              }
+              return acc;
+            }, {})
+          : payload;
+
+        if (isActive && Object.keys(parsed).length > 0) {
+          setFontsMap(parsed);
+          if (!parsed[font]) {
+            const firstKey = Object.keys(parsed)[0];
+            setFont(firstKey);
+          }
+          setFontsError(null);
+        }
+      } catch (error) {
+        if (isActive) {
+          setFontsError('No se pudieron cargar las tipografías. Usamos valores por defecto.');
+          setFontsMap(DEFAULT_FONT_PRICING);
+        }
+      } finally {
+        if (isActive) {
+          setIsLoadingFonts(false);
+        }
+      }
+    };
+
+    fetchFonts();
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  const fontOptions = useMemo(() => {
+    return (Object.entries(fontsMap) as [FontId, FontDefinition][]).map(([value, info]) => ({
+      value,
+      label: info.label,
+      helper: info.helper,
+      icon: info.icon,
+    }));
+  }, [fontsMap]);
 
   const letterCount = useMemo(() => {
     return text.replace(/\s+/g, '').length;
@@ -56,32 +114,36 @@ const PriceCalculator = () => {
 
   const calculation = useMemo(
     () =>
-      calculatePrice({
-        width,
-        height,
-        wood,
-        letters: letterCount,
-        font,
-        finish,
-        iron,
-      }),
-    [width, height, wood, letterCount, font, finish, iron],
+      calculatePrice(
+        {
+          width,
+          height,
+          wood,
+          letters: letterCount,
+          font,
+          finish,
+          iron,
+        },
+        fontsMap,
+      ),
+    [width, height, wood, letterCount, font, finish, iron, fontsMap],
   );
 
   const contactMessage = useMemo(() => {
     const { total } = calculation;
+    const fontInfo = fontsMap[font];
     return [
       'Hola, me interesa un cartel tallado.',
       `Medidas: ${width} cm de ancho x ${height} cm de alto.`,
       `Madera: ${WOOD_LABEL[wood]}.`,
-      `Texto: "${text}" (${letterCount} letras) en estilo ${FONT_LABEL[font]}.`,
+      `Texto: "${text}" (${letterCount} letras) en estilo ${fontInfo?.label ?? font}.`,
       `Acabado: ${FINISH_LABEL[finish]}.`,
       iron ? 'Agregar estructura de hierro.' : undefined,
       `Precio estimado: ${currencyFormatter.format(total)}.`,
     ]
       .filter(Boolean)
       .join(' ');
-  }, [calculation, width, height, wood, text, letterCount, font, finish, iron]);
+  }, [calculation, width, height, wood, text, letterCount, font, finish, iron, fontsMap]);
 
   return (
     <main className="calculator">
@@ -137,8 +199,10 @@ const PriceCalculator = () => {
         </h2>
         <div className="step-card__body">
           <OptionSelector label="Madera" value={wood} options={woodOptions} onChange={(value) => setWood(value as WoodType)} />
-          <OptionSelector label="Tipografía" value={font} options={fontOptions} onChange={(value) => setFont(value as FontStyle)} />
+          <OptionSelector label="Tipografía" value={font} options={fontOptions} onChange={(value) => setFont(value)} />
           <OptionSelector label="Acabado" value={finish} options={finishOptions} onChange={(value) => setFinish(value as FinishType)} />
+          {fontsError && <p className="field__helper">{fontsError}</p>}
+          {isLoadingFonts && <p className="field__helper">Cargando tipografías…</p>}
         </div>
       </section>
 

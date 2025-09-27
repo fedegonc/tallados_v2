@@ -10,7 +10,7 @@
   --color-accent: #2f6f75;
   --color-accent-strong: #205355;
   --color-highlight: #f0d7b4;
-  --shadow-soft: 0 12px 28px rgba(47, 52, 55, 0.12);
+  --shadow-soft: 0 8px 20px rgba(47, 52, 55, 0.1);
   font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--color-text);
 }
@@ -32,7 +32,7 @@ body {
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  padding: 48px 16px 72px;
+  padding: 40px 16px 64px;
 }
 
 .calculator {
@@ -47,7 +47,7 @@ body {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 18px;
-  padding: 32px;
+  padding: 28px;
   box-shadow: var(--shadow-soft);
 }
 
@@ -70,10 +70,10 @@ body {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 18px;
-  padding: 28px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
   box-shadow: var(--shadow-soft);
 }
 
@@ -103,13 +103,13 @@ body {
 .step-card__body {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
 }
 
 .step-card__sliders {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 18px;
+  gap: 14px;
 }
 
 .field {
@@ -128,7 +128,7 @@ body {
   width: 100%;
   border: 1px solid var(--color-border);
   border-radius: 10px;
-  padding: 12px 14px;
+  padding: 10px 12px;
   font-size: 15px;
   background: rgba(255, 255, 255, 0.9);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -171,17 +171,17 @@ body {
 .selector__options {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
+  gap: 12px;
 }
 
 .selector__option {
   border: 1px solid var(--color-border);
-  border-radius: 14px;
-  padding: 16px;
+  border-radius: 12px;
+  padding: 14px;
   background: rgba(255, 255, 255, 0.75);
   text-align: left;
   display: grid;
-  gap: 6px;
+  gap: 4px;
   font-size: 14px;
   cursor: pointer;
   transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
@@ -222,10 +222,10 @@ body {
 .summary {
   border: 1px solid var(--color-border);
   border-radius: 18px;
-  padding: 24px;
+  padding: 22px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
   background: rgba(255, 255, 255, 0.95);
   box-shadow: var(--shadow-soft);
 }
@@ -251,8 +251,8 @@ body {
   justify-content: space-between;
   align-items: center;
   border: 1px solid rgba(181, 140, 100, 0.45);
-  border-radius: 14px;
-  padding: 14px 18px;
+  border-radius: 12px;
+  padding: 12px 16px;
   background: rgba(255, 255, 255, 0.7);
 }
 
@@ -311,14 +311,14 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 28px;
+  padding: 11px 24px;
   border-radius: 999px;
   text-decoration: none;
   font-weight: 600;
   color: #ffffff;
   background: var(--color-accent);
   border: 1px solid var(--color-accent-strong);
-  box-shadow: 0 10px 18px rgba(47, 111, 117, 0.25);
+  box-shadow: 0 8px 16px rgba(47, 111, 117, 0.25);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
@@ -335,7 +335,7 @@ body {
 
 @media (max-width: 720px) {
   .app {
-    padding: 32px 12px 56px;
+    padding: 28px 12px 52px;
   }
 
   .calculator {
@@ -343,6 +343,6 @@ body {
   }
 
   .step-card {
-    padding: 24px;
+    padding: 22px;
   }
 }

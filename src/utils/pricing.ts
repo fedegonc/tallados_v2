@@ -1,5 +1,5 @@
-type WoodType = 'pino' | 'cedro' | 'roble';
-type FontStyle = 'block' | 'serif' | 'script';
+type WoodType = 'angelin' | 'cedro_mara';
+type FontId = string;
 type FinishType = 'natural' | 'barniz' | 'lacado';
 
 type PricingConfig = {
@@ -7,7 +7,7 @@ type PricingConfig = {
   height: number;
   wood: WoodType;
   letters: number;
-  font: FontStyle;
+  font: FontId;
   iron: boolean;
   finish: FinishType;
 };
@@ -24,29 +24,30 @@ type PriceCalculation = {
 };
 
 const WOOD_COST_PER_100CM2: Record<WoodType, number> = {
-  pino: 1600,
-  cedro: 2200,
-  roble: 2600,
+  angelin: 2100,
+  cedro_mara: 2500,
 };
 
 const WOOD_LABEL: Record<WoodType, string> = {
-  pino: 'Pino Elliotis',
-  cedro: 'Cedro',
-  roble: 'Roble',
+  angelin: 'Angelin',
+  cedro_mara: 'Cedro Mara',
 };
 
 const LETTER_COST = 650;
 
-const FONT_MULTIPLIER: Record<FontStyle, number> = {
-  block: 1,
-  serif: 1.1,
-  script: 1.25,
+type FontDefinition = {
+  label: string;
+  multiplier: number;
+  helper?: string;
+  icon?: string;
 };
 
-const FONT_LABEL: Record<FontStyle, string> = {
-  block: 'Bloque',
-  serif: 'Serif',
-  script: 'Script',
+type FontPricingMap = Record<FontId, FontDefinition>;
+
+const DEFAULT_FONT_PRICING: FontPricingMap = {
+  block: { label: 'Bloque', multiplier: 1, helper: 'Legible y recto', icon: '🔠' },
+  serif: { label: 'Serif', multiplier: 1.1, helper: 'Clásica y elegante', icon: '✒️' },
+  script: { label: 'Script', multiplier: 1.25, helper: 'Caligrafía artística', icon: '🖋️' },
 };
 
 const FINISH_MULTIPLIER: Record<FinishType, number> = {
@@ -72,7 +73,7 @@ const stabilize = (value: number) => (Number.isFinite(value) ? value : 0);
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 const toCurrency = (value: number) => Math.max(Math.round(value), 0);
 
-const calculatePrice = (config: PricingConfig): PriceCalculation => {
+const calculatePrice = (config: PricingConfig, fontPricing: FontPricingMap = DEFAULT_FONT_PRICING): PriceCalculation => {
   const width = clamp(stabilize(config.width), MIN_WIDTH_CM, MAX_WIDTH_CM);
   const height = clamp(stabilize(config.height), MIN_HEIGHT_CM, MAX_HEIGHT_CM);
   const letters = Math.max(Math.floor(stabilize(config.letters)), 0);
@@ -82,7 +83,8 @@ const calculatePrice = (config: PricingConfig): PriceCalculation => {
   const woodBase = (effectiveArea / 100) * WOOD_COST_PER_100CM2[config.wood];
 
   const baseLetterCost = letters * LETTER_COST;
-  const typographyCost = baseLetterCost * FONT_MULTIPLIER[config.font];
+  const fontInfo = fontPricing[config.font] ?? DEFAULT_FONT_PRICING.block;
+  const typographyCost = baseLetterCost * (fontInfo?.multiplier ?? 1);
 
   const subtotal = woodBase + typographyCost;
   const finishFactor = FINISH_MULTIPLIER[config.finish];
@@ -99,7 +101,7 @@ const calculatePrice = (config: PricingConfig): PriceCalculation => {
     {
       label: 'Tallado de letras',
       amount: toCurrency(typographyCost),
-      helper: `${letters} letras · Estilo ${FONT_LABEL[config.font]}`,
+      helper: `${letters} letras · Estilo ${fontInfo?.label ?? config.font}`,
     },
   ];
 
@@ -129,16 +131,18 @@ export type {
   PriceSummarySection,
   PriceCalculation,
   WoodType,
-  FontStyle,
+  FontId,
   FinishType,
+  FontDefinition,
+  FontPricingMap,
 };
 export {
   calculatePrice,
   WOOD_LABEL,
   FINISH_LABEL,
-  FONT_LABEL,
   MIN_WIDTH_CM,
   MAX_WIDTH_CM,
   MIN_HEIGHT_CM,
   MAX_HEIGHT_CM,
+  DEFAULT_FONT_PRICING,
 };
