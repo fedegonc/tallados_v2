@@ -29,6 +29,9 @@ const InputField = ({
   maxLength,
   rows = 3,
 }: InputFieldProps) => {
+  const containerClass = `field${multiline ? ' field--multiline' : ''}${type === 'range' ? ' field--range' : ''}`;
+  const inputClass = `field__input${multiline ? ' field__input--textarea' : ''}${type === 'range' ? ' field__input--range' : ''}`;
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const rawValue = event.target.value;
     const parsedValue = type === 'text' ? rawValue : Number(rawValue);
@@ -40,11 +43,11 @@ const InputField = ({
   };
 
   return (
-    <label className="field">
+    <label className={containerClass}>
       <span className="field__label">{label}</span>
       {multiline ? (
         <textarea
-          className="field__input field__input--textarea"
+          className={inputClass}
           value={value}
           placeholder={placeholder}
           maxLength={maxLength}
@@ -53,7 +56,7 @@ const InputField = ({
         />
       ) : (
         <input
-          className="field__input"
+          className={inputClass}
           type={type}
           value={value}
           min={min}
