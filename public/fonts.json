@@ -1,0 +1,37 @@
+[
+  {
+    "id": "block",
+    "label": "Bloque",
+    "multiplier": 1,
+    "helper": "Legible y recto",
+    "icon": "🔠"
+  },
+  {
+    "id": "serif",
+    "label": "Serif",
+    "multiplier": 1.1,
+    "helper": "Clásica y elegante",
+    "icon": "✒️"
+  },
+  {
+    "id": "script",
+    "label": "Script",
+    "multiplier": 1.25,
+    "helper": "Caligrafía artística",
+    "icon": "🖋️"
+  },
+  {
+    "id": "sans_curvo",
+    "label": "Sans Curvo",
+    "multiplier": 1.08,
+    "helper": "Minimalista con curvas suaves",
+    "icon": "🔤"
+  },
+  {
+    "id": "firme_moderno",
+    "label": "Firme Moderno",
+    "multiplier": 1.2,
+    "helper": "Palos firmes, ideal para fachadas",
+    "icon": "🪵"
+  }
+]

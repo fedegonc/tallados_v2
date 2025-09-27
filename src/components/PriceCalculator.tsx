@@ -50,30 +50,39 @@ const PriceCalculator = () => {
 
   useEffect(() => {
     let isActive = true;
+
+    const parsePayload = (payload: FontPricingMap | FontDefinition[]): FontPricingMap => {
+      if (Array.isArray(payload)) {
+        return payload.reduce<FontPricingMap>((acc, item) => {
+          if (item && typeof item.label === 'string') {
+            const id = (item as FontDefinition & { id?: string }).id ?? item.label.toLowerCase();
+            acc[id] = {
+              label: item.label,
+              multiplier: item.multiplier ?? 1,
+              helper: item.helper,
+              icon: item.icon,
+            } satisfies FontDefinition;
+          }
+          return acc;
+        }, {});
+      }
+      return payload;
+    };
+
+    const fetchFrom = async (url: string) => {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Estado ${response.status}`);
+      }
+      const payload = (await response.json()) as FontPricingMap | FontDefinition[];
+      return parsePayload(payload);
+    };
+
     const fetchFonts = async () => {
       try {
         setIsLoadingFonts(true);
-        const response = await fetch('/api/fonts');
-        if (!response.ok) {
-          throw new Error(`Estado ${response.status}`);
-        }
-        const payload = (await response.json()) as FontPricingMap | FontDefinition[];
-        const parsed: FontPricingMap = Array.isArray(payload)
-          ? payload.reduce<FontPricingMap>((acc, item) => {
-              if (item && typeof (item as FontDefinition).label === 'string') {
-                const id = (item as FontDefinition & { id?: string }).id ?? item.label.toLowerCase();
-                acc[id] = {
-                  label: item.label,
-                  multiplier: item.multiplier ?? 1,
-                  helper: item.helper,
-                  icon: item.icon,
-                } satisfies FontDefinition;
-              }
-              return acc;
-            }, {})
-          : payload;
-
-        if (isActive && Object.keys(parsed).length > 0) {
+        const parsed = await fetchFrom('/api/fonts');
+        if (isActive) {
           setFontsMap(parsed);
           if (!parsed[font]) {
             const firstKey = Object.keys(parsed)[0];
@@ -81,10 +90,22 @@ const PriceCalculator = () => {
           }
           setFontsError(null);
         }
-      } catch (error) {
-        if (isActive) {
-          setFontsError('No se pudieron cargar las tipografías. Usamos valores por defecto.');
-          setFontsMap(DEFAULT_FONT_PRICING);
+      } catch (primaryError) {
+        try {
+          const parsedFallback = await fetchFrom('/fonts.json');
+          if (isActive) {
+            setFontsMap(parsedFallback);
+            if (!parsedFallback[font]) {
+              const firstKey = Object.keys(parsedFallback)[0];
+              setFont(firstKey);
+            }
+            setFontsError('Usando catálogo local de tipografías.');
+          }
+        } catch (secondaryError) {
+          if (isActive) {
+            setFontsError('No se pudieron cargar las tipografías. Usamos valores por defecto.');
+            setFontsMap(DEFAULT_FONT_PRICING);
+          }
         }
       } finally {
         if (isActive) {
@@ -97,7 +118,7 @@ const PriceCalculator = () => {
     return () => {
       isActive = false;
     };
-  }, []);
+  }, [font]);
 
   const fontOptions = useMemo(() => {
     return (Object.entries(fontsMap) as [FontId, FontDefinition][]).map(([value, info]) => ({
