@@ -1,12 +1,12 @@
 // src/main.tsx
 
-import React from 'react'; // 💡 NECESARIO para usar <React.StrictMode>
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
-// import './index.css';  <--- 💡 Elimina esta línea ya que borraste index.css
+// import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
+  </React.StrictMode> 
 );
