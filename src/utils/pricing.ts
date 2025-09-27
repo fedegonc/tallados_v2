@@ -63,13 +63,18 @@ const FINISH_LABEL: Record<FinishType, string> = {
 
 const IRON_COST = 18000;
 const MINIMUM_AREA_CM2 = 400;
+const MIN_WIDTH_CM = 30;
+const MAX_WIDTH_CM = 180;
+const MIN_HEIGHT_CM = 20;
+const MAX_HEIGHT_CM = 30;
 
 const stabilize = (value: number) => (Number.isFinite(value) ? value : 0);
+const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 const toCurrency = (value: number) => Math.max(Math.round(value), 0);
 
 const calculatePrice = (config: PricingConfig): PriceCalculation => {
-  const width = Math.max(stabilize(config.width), 0);
-  const height = Math.max(stabilize(config.height), 0);
+  const width = clamp(stabilize(config.width), MIN_WIDTH_CM, MAX_WIDTH_CM);
+  const height = clamp(stabilize(config.height), MIN_HEIGHT_CM, MAX_HEIGHT_CM);
   const letters = Math.max(Math.floor(stabilize(config.letters)), 0);
 
   const rawArea = width * height;
@@ -132,4 +137,8 @@ export {
   WOOD_LABEL,
   FINISH_LABEL,
   FONT_LABEL,
+  MIN_WIDTH_CM,
+  MAX_WIDTH_CM,
+  MIN_HEIGHT_CM,
+  MAX_HEIGHT_CM,
 };

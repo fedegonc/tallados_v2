@@ -8,6 +8,10 @@ import {
   FINISH_LABEL,
   FONT_LABEL,
   WOOD_LABEL,
+  MIN_WIDTH_CM,
+  MAX_WIDTH_CM,
+  MIN_HEIGHT_CM,
+  MAX_HEIGHT_CM,
   type FinishType,
   type FontStyle,
   type WoodType,
@@ -39,7 +43,7 @@ const currencyFormatter = new Intl.NumberFormat('es-AR', {
 
 const PriceCalculator = () => {
   const [width, setWidth] = useState(60);
-  const [height, setHeight] = useState(40);
+  const [height, setHeight] = useState(25);
   const [wood, setWood] = useState<WoodType>('pino');
   const [font, setFont] = useState<FontStyle>('block');
   const [finish, setFinish] = useState<FinishType>('natural');
@@ -96,21 +100,21 @@ const PriceCalculator = () => {
               label={`Ancho (${width} cm)`}
               value={width}
               type="range"
-              min={30}
-              max={200}
+              min={MIN_WIDTH_CM}
+              max={MAX_WIDTH_CM}
               step={1}
-              helper="Ajustá el ancho con el deslizador"
-              onChange={(value) => setWidth(Number(value) || 0)}
+              helper={`Rango permitido: ${MIN_WIDTH_CM}-${MAX_WIDTH_CM} cm`}
+              onChange={(value) => setWidth(Number(value) || MIN_WIDTH_CM)}
             />
             <InputField
               label={`Alto (${height} cm)`}
               value={height}
               type="range"
-              min={20}
-              max={120}
+              min={MIN_HEIGHT_CM}
+              max={MAX_HEIGHT_CM}
               step={1}
-              helper="Ajustá el alto con el deslizador"
-              onChange={(value) => setHeight(Number(value) || 0)}
+              helper={`Rango permitido: ${MIN_HEIGHT_CM}-${MAX_HEIGHT_CM} cm`}
+              onChange={(value) => setHeight(Number(value) || MIN_HEIGHT_CM)}
             />
           </div>
           <InputField
