@@ -11,6 +11,7 @@ const buildWhatsAppUrl = (message: string) => {
 const ContactButton = ({ message }: ContactButtonProps) => {
   return (
     <a className="contact-button" href={buildWhatsAppUrl(message)} target="_blank" rel="noreferrer">
+      <span aria-hidden>💬</span>
       Pedir presupuesto por WhatsApp
     </a>
   );
