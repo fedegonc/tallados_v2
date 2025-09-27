@@ -1,9 +1,9 @@
-// src/App.tsx
+import PriceCalculator from './components/PriceCalculator';
 
 const App = () => {
   return (
-    <div className="main-container">
-      <h1>Hola Mundo</h1>
+    <div className="app">
+      <PriceCalculator />
     </div>
   );
 };
