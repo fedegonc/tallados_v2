@@ -1,3 +1,20 @@
+# dependencias
+node_modules
+
+# build artifacts (Archivos generados por el build)
+dist
+dist-ssr
+*.local
+/coverage
+
+# Archivos de Entorno/Configuración (CRUCIALES para seguridad)
+.env
+.env.local
+.env.*.local
+
+# Vercel (Cache y configuración local)
+.vercel
+
 # Logs
 logs
 *.log
@@ -7,14 +24,9 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
 # Editor directories and files
 .vscode/*
-!.vscode/extensions.json
+!.vscode/extensions.json  # Mantener esta excepción si quieres compartir extensiones recomendadas
 .idea
 .DS_Store
 *.suo
