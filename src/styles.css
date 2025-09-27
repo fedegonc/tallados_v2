@@ -1,0 +1,277 @@
+:root {
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #1f2933;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #ffffff;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 32px 16px 64px;
+}
+
+.calculator {
+  width: min(960px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.calculator__header {
+  border: 1px solid #d4d4d8;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.calculator__header h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+
+.calculator__header p {
+  margin: 0;
+  font-size: 16px;
+  color: #475569;
+}
+
+.step-card {
+  border: 1px solid #d4d4d8;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.step-card__title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 20px;
+}
+
+.step-card__index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #94a3b8;
+  border-radius: 50%;
+  font-weight: 600;
+}
+
+.step-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.step-card__sliders {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field__label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.field__input {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 15px;
+  background: #ffffff;
+}
+
+.field__input--textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
+.field__input--range {
+  padding: 0;
+  height: 36px;
+}
+
+.field__helper {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.selector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.selector__label {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.selector__options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.selector__option {
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 14px;
+  background: transparent;
+  text-align: left;
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.selector__option--active {
+  border-color: #0f172a;
+}
+
+.selector__option-icon {
+  font-size: 20px;
+}
+
+.selector__option-helper {
+  color: #64748b;
+}
+
+.calculator__checkbox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+}
+
+.calculator__checkbox input {
+  width: 18px;
+  height: 18px;
+}
+
+.summary {
+  border: 1px solid #d4d4d8;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.summary__title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.summary__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summary__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+
+.summary__item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.summary__item-icon {
+  font-size: 20px;
+}
+
+.summary__item-helper {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.summary__item-amount {
+  font-weight: 600;
+}
+
+.summary__divider {
+  border: none;
+  border-top: 1px solid #d4d4d8;
+}
+
+.summary__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+}
+
+.summary__total strong {
+  font-size: 22px;
+}
+
+.calculator__disclaimer {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+}
+
+.calculator__footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.contact-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border: 1px solid #0f172a;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+@media (max-width: 720px) {
+  .app {
+    padding: 24px 12px 48px;
+  }
+
+  .calculator {
+    gap: 24px;
+  }
+
+  .step-card {
+    padding: 20px;
+  }
+}
