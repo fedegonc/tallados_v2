@@ -48,7 +48,7 @@ const PriceCalculator = () => {
   const [font, setFont] = useState<FontStyle>('block');
   const [finish, setFinish] = useState<FinishType>('natural');
   const [iron, setIron] = useState(false);
-  const [text, setText] = useState('Bienvenidos');
+  const [text, setText] = useState('El Ejemplo');
 
   const letterCount = useMemo(() => {
     return text.replace(/\s+/g, '').length;
